@@ -6,9 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Take Test</title>
     <style>
-        /* Add some styling if needed */
         #questionSection, #finishButton {
-            display: none; /* Initially hide the question section and the button */
+            display: none;
         }
     </style>
 </head>
@@ -22,10 +21,6 @@
         <option value="{{ test.testId }}">{{ test.test_name }}</option>
         {% endfor %}
     </select>
-
-    <p>Debug: selected_test = {{ selected_test }}</p>
-<p>Debug: selected_test.questions = {{ selected_test.questions }}</p>
-
 
     <div id="confirmSection">
         <button type="button" onclick="confirmTestSelection()">Confirm Selection</button>
@@ -48,16 +43,15 @@
     <button type="submit" id="finishButton">Finish Test</button>
 </form>
 
+
 <script>
     function confirmTestSelection() {
-        // Show the question section and the finish button when confirming the test selection
         document.getElementById('questionSection').style.display = 'block';
         document.getElementById('finishButton').style.display = 'block';
-        document.getElementById('confirmSection').style.display = 'none';  // Hide the confirmation button
+        document.getElementById('confirmSection').style.display = 'none';
     }
 
     document.getElementById('test_selector').addEventListener('change', function () {
-        // Show the confirmation section when a test is selected
         document.getElementById('confirmSection').style.display = 'block';
     });
 </script>

@@ -7,7 +7,7 @@ from wtforms.validators import DataRequired
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
-app.config['SECRET_KEY'] = '123'  # Замените 'your_unique_secret_key' на уникальный и секретный ключ
+app.config['SECRET_KEY'] = '123'
 db = SQLAlchemy(app)
 
 
@@ -66,12 +66,10 @@ def add_question():
         answer_text = request.form.get('answer_text')
         weight = request.form.get('weight')
 
-        # Проверяем, что поля вопроса и ответа не пустые
         if not question_text or not answer_text:
             error_message = "Question and Answer cannot be empty."
             return render_template('add_question.html', error_message=error_message)
 
-        # Проверяем, что вес больше 0
         if int(weight) < 1:
             error_message = "Weight must be greater than 0."
             return render_template('add_question.html', error_message=error_message)
@@ -122,7 +120,6 @@ def view_tests():
 def delete_test(test_id):
     test = Tests.query.get_or_404(test_id)
 
-    # Удаляем связанные результаты перед удалением теста
     Results.query.filter_by(test_id=test_id).delete()
 
     db.session.delete(test)
@@ -136,15 +133,12 @@ def edit_test(test_id):
     form = EditTestForm()
 
     if request.method == 'POST':
-        # Обработка данных формы
 
-        # Обновление названия теста, если оно было изменено
         new_test_name = request.form.get('test_name')
         if new_test_name and new_test_name != test.test_name:
             test.test_name = new_test_name
             db.session.commit()
 
-        # Добавление новых вопросов к тесту
         selected_questions = request.form.getlist('selected_questions')
         for question_id in selected_questions:
             question = Questions.query.get_or_404(question_id)
@@ -152,7 +146,6 @@ def edit_test(test_id):
                 test.questions.append(question)
         db.session.commit()
 
-        # Удаление выбранных вопросов из теста
         deleted_questions = request.form.getlist('deleted_questions')
         for question_id in deleted_questions:
             question = Questions.query.get_or_404(question_id)
@@ -184,10 +177,8 @@ def take_test():
                 if user_answer.lower() == question.Answer.lower():
                     obtained_weight += question.Weight
 
-        # Calculate the score
         score = obtained_weight / total_weight if total_weight != 0 else 0
 
-        # Assign grade based on the score
         if score < 0.5:
             grade = 2
         elif 0.5 <= score < 0.7:
@@ -197,12 +188,11 @@ def take_test():
         else:
             grade = 5
 
-        # Update the Results table with the test result
         result_entry = Results(result=grade, test_id=test_id)
         db.session.add(result_entry)
         db.session.commit()
 
-        return render_template('test_result.html', grade=grade)  # You can customize this page
+        return render_template('test_result.html', grade=grade)
 
     tests = Tests.query.all()
     return render_template('take_test.html', tests=tests, selected_test=None)

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View All Questions</title>
+</head>
+<body>
+    <h1>All Questions</h1>
+
+    <ul>
+        {% for question in questions %}
+            <li>
+                {{ question.Question }}
+                <button onclick="toggleAnswers('{{ question.idQuestion }}')">View Answers</button>
+                <div id="answers_{{ question.idQuestion }}" style="display: none;">
+                    Answers: {{ question.Answer }}
+                </div>
+                <button onclick="confirmDelete('{{ question.idQuestion }}')">Delete</button>
+            </li>
+        {% endfor %}
+    </ul>
+
+    <script>
+        function toggleAnswers(questionId) {
+            var answersDiv = document.getElementById('answers_' + questionId);
+            answersDiv.style.display = (answersDiv.style.display === 'none') ? 'block' : 'none';
+        }
+
+        function confirmDelete(questionId) {
+            var result = confirm("Are you sure you want to delete this question?");
+            if (result) {
+                // Если пользователь подтвердил удаление, отправляем форму для удаления
+                var form = document.createElement('form');
+                form.method = 'POST';
+                form.action = '/delete_question/' + questionId;
+                form.style.display = 'none';
+                document.body.appendChild(form);
+                form.submit();
+            }
+        }
+    </script>
+</body>
+</html>

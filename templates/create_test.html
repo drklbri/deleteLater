@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Test</title>
+</head>
+<body>
+    <h1>Create Test</h1>
+
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul>
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+
+    <form method="POST" action="{{ url_for('create_test') }}">
+        <label for="test_name">Test Name:</label>
+        <input type="text" name="test_name" required>
+
+        <p>Available Questions:</p>
+        <ul>
+            {% for question in questions %}
+                <li>
+                    <input type="checkbox" name="selected_questions" value="{{ question.idQuestion }}">
+                    {{ question.Question }}
+                </li>
+            {% endfor %}
+        </ul>
+
+        <button type="submit">Create Test</button>
+    </form>
+</body>
+</html>

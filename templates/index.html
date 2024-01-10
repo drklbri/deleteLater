@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flask App</title>
+</head>
+<body>
+    <h1>Меню</h1>
+    <!-- Добавим кнопку для перехода на страницу просмотра вопросов -->
+    <div>
+        <a href="{{ url_for('view_questions') }}"><button>View Questions</button></a>
+    </div>
+    <!-- Добавим остальные кнопки для перехода на другие страницы -->
+    <div>
+        <a href="{{ url_for('add_question') }}"><button>Add Questions</button></a>
+        <a href="{{ url_for('create_test') }}"><button>Create Test</button></a>
+        <a href="{{ url_for('take_test') }}"><button>Take Test</button></a>
+        <a href="{{ url_for('view_tests') }}"><button>View Tests</button></a>
+
+    </div>
+</body>
+</html>

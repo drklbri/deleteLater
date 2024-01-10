@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Test</title>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+</head>
+<body>
+    <h1>Edit Test - {{ test.test_name }}</h1>
+
+    <form method="post" action="{{ url_for('edit_test', test_id=test.testId) }}">
+        <label for="test_name">Test Name:</label>
+        <input type="text" id="test_name" name="test_name" value="{{ test.test_name }}" required>
+        <br>
+
+        <label>Select Questions:</label>
+        <ul id="questions-list">
+            {% for question in questions %}
+                <li>
+                    <input type="checkbox" name="selected_questions" value="{{ question.idQuestion }}"
+                        {% if question in test.questions %} checked {% endif %}>
+                    {{ question.Question }}
+                </li>
+            {% endfor %}
+        </ul>
+        <button type="submit">Save Changes</button>
+    </form>
+
+    <h2>Delete Questions from Test</h2>
+    <form method="post" action="{{ url_for('edit_test', test_id=test.testId) }}">
+        <label>Select Questions to Delete:</label>
+        <ul id="deleted-questions-list">
+            {% for question in test.questions %}
+                <li>
+                    <input type="checkbox" name="deleted_questions" value="{{ question.idQuestion }}">
+                    {{ question.Question }}
+                </li>
+            {% endfor %}
+        </ul>
+
+        <button type="submit" onclick="return confirm('Are you sure you want to delete selected questions?')">Delete Selected Questions</button>
+    </form>
+
+    <script>
+        $(document).ready(function () {
+            var questionCount = {{ questions|length }};
+
+            $("#add-question-btn").click(function () {
+                var newQuestion = '<li><input type="checkbox" name="selected_questions" value="new_' + questionCount + '"> New Question ' + questionCount + '</li>';
+                $("#questions-list").append(newQuestion);
+                questionCount++;
+            });
+        });
+    </script>
+</body>
+</html>

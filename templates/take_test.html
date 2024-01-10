@@ -1,20 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Take Test</title>
-    <style>
-        #questionSection, #finishButton {
-            display: none;
-        }
-    </style>
-</head>
-<body>
-<h1>Take Test</h1>
-
-<form action="{{ url_for('take_test') }}" method="post" id="takeTestForm">
+<form action="{{ url_for('confirm_test_selection') }}" method="post" id="takeTestForm">
     <label for="test_selector">Select Test:</label>
     <select name="test_selector" id="test_selector" required>
         {% for test in tests %}
@@ -23,37 +7,6 @@
     </select>
 
     <div id="confirmSection">
-        <button type="button" onclick="confirmTestSelection()">Confirm Selection</button>
+        <button type="submit">Confirm Selection</button>
     </div>
-
-    <div id="questionSection">
-        <h2>Test Questions:</h2>
-        {% if selected_test and selected_test.questions %}
-        {% for question in selected_test.questions %}
-        <label for="answer_{{ question.idQuestion }}">{{ question.Question }}</label>
-        <input type="text" name="answer_{{ question.idQuestion }}" id="answer_{{ question.idQuestion }}" required>
-        <br>
-        {% endfor %}
-        {% else %}
-        <p>No questions available for the selected test.</p>
-        {% endif %}
-    </div>
-
-
-    <button type="submit" id="finishButton">Finish Test</button>
 </form>
-
-
-<script>
-    function confirmTestSelection() {
-        document.getElementById('questionSection').style.display = 'block';
-        document.getElementById('finishButton').style.display = 'block';
-        document.getElementById('confirmSection').style.display = 'none';
-    }
-
-    document.getElementById('test_selector').addEventListener('change', function () {
-        document.getElementById('confirmSection').style.display = 'block';
-    });
-</script>
-</body>
-</html>

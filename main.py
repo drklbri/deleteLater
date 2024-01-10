@@ -163,39 +163,66 @@ def edit_test(test_id):
 def take_test():
     if request.method == 'POST':
         test_id = int(request.form.get('test_selector'))
-        selected_test = Tests.query.get_or_404(test_id)
-
-        total_weight = 0
-        obtained_weight = 0
-
-        for question in selected_test.questions.all():
-            answer_key = 'answer_' + str(question.idQuestion)
-            user_answer = request.form.get(answer_key)
-
-            if user_answer is not None:
-                total_weight += question.Weight
-                if user_answer.lower() == question.Answer.lower():
-                    obtained_weight += question.Weight
-
-        score = obtained_weight / total_weight if total_weight != 0 else 0
-
-        if score < 0.5:
-            grade = 2
-        elif 0.5 <= score < 0.7:
-            grade = 3
-        elif 0.7 <= score < 0.9:
-            grade = 4
-        else:
-            grade = 5
-
-        result_entry = Results(result=grade, test_id=test_id)
-        db.session.add(result_entry)
-        db.session.commit()
-
-        return render_template('test_result.html', grade=grade)
+        return redirect(url_for('testing', test_id=test_id))
 
     tests = Tests.query.all()
     return render_template('take_test.html', tests=tests, selected_test=None)
+
+@app.route('/confirm_test_selection', methods=['POST'])
+def confirm_test_selection():
+    test_id = int(request.form.get('test_selector'))
+    return redirect(url_for('testing', test_id=test_id))
+
+# В вашем приложении
+@app.route('/testing/<int:test_id>', methods=['GET'])
+def testing(test_id):
+    selected_test = Tests.query.get_or_404(test_id)
+    questions = selected_test.questions.all()
+
+    # Добавим здесь логику для обработки попыток и передачи оценки в шаблон
+    grade = None  # Или что-то еще, в зависимости от вашей логики расчета
+    view_tests = 0  # Здесь также может быть ваша логика
+
+    return render_template('testing.html', questions=questions, grade=grade, view_tests=view_tests)
+
+@app.route('/submit_test', methods=['POST'])
+def submit_test():
+    test_id = int(request.form.get('test_selector'))
+    selected_test = Tests.query.get_or_404(test_id)
+
+    total_weight = sum(question.Weight for question in selected_test.questions.all())
+
+    # Initialize obtained_weight to 0
+    obtained_weight = 0
+
+    # Loop through each question and compare user input with correct answer
+    for question in selected_test.questions.all():
+        answer_key = 'answer_' + str(question.idQuestion)
+        user_answer = request.form.get(answer_key)
+
+        if user_answer is not None:
+            if user_answer.lower() == question.Answer.lower():
+                obtained_weight += question.Weight
+
+    # Calculate the score
+    if total_weight != 0:
+        score = obtained_weight / total_weight
+    else:
+        score = 0
+
+    # Assign grade based on the score
+    if score < 0.5:
+        grade = 2
+    elif 0.5 <= score < 0.7:
+        grade = 3
+    elif 0.7 <= score < 0.9:
+        grade = 4
+    else:
+        grade = 5
+
+    # Передаем переменную grade в шаблон
+    return render_template('test_result.html', grade=grade)
+
 
 
 if __name__ == '__main__':

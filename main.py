@@ -179,9 +179,8 @@ def testing(test_id):
     selected_test = Tests.query.get_or_404(test_id)
     questions = selected_test.questions.all()
 
-    # Добавим здесь логику для обработки попыток и передачи оценки в шаблон
-    grade = None  # Или что-то еще, в зависимости от вашей логики расчета
-    view_tests = 0  # Здесь также может быть ваша логика
+    grade = None
+    view_tests = 0
 
     return render_template('testing.html', questions=questions, grade=grade, view_tests=view_tests)
 
@@ -192,10 +191,8 @@ def submit_test():
 
     total_weight = sum(question.Weight for question in selected_test.questions.all())
 
-    # Initialize obtained_weight to 0
     obtained_weight = 0
 
-    # Loop through each question and compare user input with correct answer
     for question in selected_test.questions.all():
         answer_key = 'answer_' + str(question.idQuestion)
         user_answer = request.form.get(answer_key)

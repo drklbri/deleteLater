@@ -168,9 +168,9 @@ def edit_test(test_id):
 
 @app.route('/take_test', methods=['GET', 'POST'])
 def take_test():
+    test_id = int(request.form.get("test_selector"))
+    selected_test = Tests.query.get_or_404(test_id)
     if request.method == 'POST':
-        test_id = int(request.form.get('test_selector'))
-        selected_test = Tests.query.get_or_404(test_id)
 
         total_weight = 0
         obtained_weight = 0
@@ -205,7 +205,7 @@ def take_test():
         return render_template('test_result.html', grade=grade)  # You can customize this page
 
     tests = Tests.query.all()
-    return render_template('take_test.html', tests=tests, selected_test=None)
+    return render_template('take_test.html', tests=tests, selected_test=selected_test)
 
 
 if __name__ == '__main__':

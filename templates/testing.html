@@ -1,0 +1,56 @@
+<!-- testing.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Testing</title>
+</head>
+<body>
+    <h1>Testing</h1>
+
+    <form action="{{ url_for('submit_test') }}" method="post" id="testForm">
+        <h2>Test Questions:</h2>
+        {% for question in questions %}
+            <label for="answer_{{ question.idQuestion }}">{{ question.Question }}</label>
+            <input type="text" name="answer_{{ question.idQuestion }}" id="answer_{{ question.idQuestion }}" required>
+            <br>
+        {% endfor %}
+
+        <button type="submit">Finish Test</button>
+    </form>
+
+    <div id="finishConfirmation" style="display: none;">
+        <p>Are you sure you want to finish the test?</p>
+        <button type="button" onclick="finishTest()">Yes</button>
+        <button type="button" onclick="cancelFinish()">No</button>
+    </div>
+
+    <div id="testResult" style="display: none;">
+        <h2>Test Result:</h2>
+        {% if grade is not none %}
+            <p>Your grade: {{ grade }}</p>
+        {% else %}
+            <p>Your grade: Not available</p>
+        {% endif %}
+    </div>
+
+    <script>
+        function finishTest() {
+            document.getElementById('finishConfirmation').style.display = 'none';
+            document.getElementById('testResult').style.display = 'block';
+        }
+
+        function cancelFinish() {
+            document.getElementById('finishConfirmation').style.display = 'none';
+        }
+
+        document.getElementById('testForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+            document.getElementById('finishConfirmation').style.display = 'block';
+        });
+    </script>
+</body>
+</html>
